@@ -1,0 +1,25 @@
+{
+  "name": "ember-cli-compass-bootstrap",
+  "version": "0.0.1",
+  "description": "Ember CLI add-on to install sass, compass and bootstrap-sass",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mathieul/ember-cli-compass-bootstrap"
+  },
+  "keywords": [
+    "ember-addon"
+  ],
+  "author": "Mathieu Lajugie",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mathieul/ember-cli-compass-bootstrap/issues"
+  },
+  "homepage": "https://github.com/mathieul/ember-cli-compass-bootstrap",
+  "dependencies": {
+    "fs-extra": "^0.10.0"
+  }
+}
