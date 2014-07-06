@@ -5,6 +5,9 @@ var _npmPackages = {'broccoli-merge-trees': '^0.1.4',
                     'broccoli-static-compiler': '^0.1.4',
                     'broccoli-sass': '^0.2.0'};
 
+var _bowerPackages = {'bootstrap-sass-official': '3.2.0',
+                      'compass-mixins': '1.0.0'};
+
 var _brocInit = "var pickFiles  = require('broccoli-static-compiler');\n"
               + "var mergeTrees = require('broccoli-merge-trees');";
 
@@ -20,34 +23,6 @@ var _brocEnd  = "var bootstrapDir = 'vendor/bootstrap-sass-official/assets';\n\n
               + "});\n\n"
               + "module.exports = mergeTrees([app.toTree(), extraAssets]);\n";
 
-var _updatePackageJson = function () {
-  var configPath = path.join(process.cwd(), 'package.json'),
-      content    = fs.readFileSync(configPath, 'utf-8'),
-      config     = JSON.parse(content),
-      dev        = config.devDependencies,
-      name, version;
-
-  for (name in _npmPackages) {
-    version = _npmPackages[name];
-    dev[name] = dev[name] || version;
-  }
-  content = JSON.stringify(config, null, '  ');
-
-  fs.writeFileSync(configPath, content);
-};
-
-var _updateBrocfile = function () {
-  var brocfilePath = path.join(process.cwd(), 'Brocfile.js'),
-      content = fs.readFileSync(brocfilePath, 'utf-8'),
-      reInitMark = /(var EmberApp\s*=\s*require.+;)/,
-      reEndMark  = /module.exports\s*=\s*app.toTree\(\);/;
-
-  content = content.replace(reInitMark, "$1\n" + _brocInit);
-  content = content.replace(reEndMark, _brocEnd);
-
-  fs.writeFileSync(brocfilePath, content);
-};
-
 module.exports = {
   locals: function(options) {
     return {
@@ -57,7 +32,57 @@ module.exports = {
   },
 
   afterInstall: function (options) {
-    _updatePackageJson();
-    _updateBrocfile();
+    var npmUpdater      = new ConfigUpdater('package.json'),
+        bowerUpdater    = new ConfigUpdater('bower.json'),
+        brocfileUpdater = new ScriptUpdater('Brocfile.js');
+
+    npmUpdater.update('devDependencies', _npmPackages);
+    npmUpdater.save();
+
+    bowerUpdater.update('dependencies', _bowerPackages);
+    bowerUpdater.save();
+
+    brocfileUpdater.update(/(var EmberApp\s*=\s*require.+;)/, "$1\n" + _brocInit);
+    brocfileUpdater.update(/module.exports\s*=\s*app.toTree\(\);/, _brocEnd);
+    brocfileUpdater.save();
   }
+};
+
+function ConfigUpdater(name) {
+  var configPath = path.join(name),
+      content    = fs.readFileSync(configPath, 'utf-8'),
+      config     = JSON.parse(content);
+
+  this.path = configPath;
+  this.config = config;
+}
+
+ConfigUpdater.prototype.update = function (field, update) {
+  var target = this.config[field];
+
+  for (var name in update) {
+    target[name] = target[name] || update[name];
+  }
+};
+
+ConfigUpdater.prototype.save = function () {
+  var content = JSON.stringify(this.config, null, '  ') + "\n";
+
+  fs.writeFileSync(this.path, content);
+};
+
+function ScriptUpdater(name) {
+  var scriptPath = path.join(name),
+      content    = fs.readFileSync(scriptPath, 'utf-8');
+
+  this.path = scriptPath;
+  this.content = content;
+}
+
+ScriptUpdater.prototype.update = function (re, updated) {
+  this.content = this.content.replace(re, updated);
+};
+
+ScriptUpdater.prototype.save = function () {
+  fs.writeFileSync(this.path, this.content);
 };
