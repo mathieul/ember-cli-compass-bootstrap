@@ -16,6 +16,22 @@ function merge() {
   return destination;
 }
 
+function _setSassOptions(app) {
+  var plugins = app.registry.registry.css,
+      index, plugin;
+
+  for (index in plugins) {
+    plugin = plugins[index];
+    if (plugin.name === 'broccoli-sass') {
+      plugin.options.includePaths = [
+        'vendor/bootstrap-sass-official/assets/stylesheets',
+        'vendor/compass-mixins/lib'
+      ];
+      console.log("Sass options updated.");
+    }
+  }
+}
+
 function CompassBootstrapAddon(project) {
   this.project = project;
   this.name    = "Ember CLI add-on to install sass, compass and bootstrap-sass";
@@ -26,7 +42,7 @@ CompassBootstrapAddon.prototype.blueprintsPath = function () {
 };
 
 CompassBootstrapAddon.prototype.included = function (app) {
-  this.app = app;
+  _setSassOptions(app);
 };
 
 module.exports  = CompassBootstrapAddon;
