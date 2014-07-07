@@ -1,5 +1,6 @@
-var fs        = require('fs-extra');
-var path      = require('path');
+var fs    = require('fs-extra');
+var path  = require('path');
+var chalk = require('chalk');
 
 var _npmPackages = {'broccoli-merge-trees': '^0.1.4',
                     'broccoli-static-compiler': '^0.1.4',
@@ -21,7 +22,7 @@ var _brocEnd  = "var bootstrapDir = 'vendor/bootstrap-sass-official/assets';\n\n
               + "  srcDir: '/',\n"
               + "  destDir: '/assets/bootstrap'\n"
               + "});\n\n"
-              + "module.exports = mergeTrees([app.toTree(), extraAssets]);\n";
+              + "module.exports = mergeTrees([app.toTree(), extraAssets]);";
 
 module.exports = {
   locals: function(options) {
@@ -42,9 +43,16 @@ module.exports = {
     bowerUpdater.update('dependencies', _bowerPackages);
     bowerUpdater.save();
 
-    brocfileUpdater.update(/(var EmberApp\s*=\s*require.+;)/, "$1\n" + _brocInit);
+    brocfileUpdater.update(/(var EmberApp\s*=\s*require.+;)/, "$1\n" + _brocInit, _brocInit);
     brocfileUpdater.update(/module.exports\s*=\s*app.toTree\(\);/, _brocEnd);
     brocfileUpdater.save();
+
+    console.log(
+      chalk.blue("Please update npm and bower packages: execute ") +
+      chalk.red.bold("npm install") +
+      chalk.blue(" and ") +
+      chalk.red.bold("bower install") + chalk.blue(".")
+    );
   }
 };
 
@@ -53,8 +61,10 @@ function ConfigUpdater(name) {
       content    = fs.readFileSync(configPath, 'utf-8'),
       config     = JSON.parse(content);
 
-  this.path = configPath;
-  this.config = config;
+  this.name     = name;
+  this.original = content;
+  this.path     = configPath;
+  this.config   = config;
 }
 
 ConfigUpdater.prototype.update = function (field, update) {
@@ -68,21 +78,32 @@ ConfigUpdater.prototype.update = function (field, update) {
 ConfigUpdater.prototype.save = function () {
   var content = JSON.stringify(this.config, null, '  ') + "\n";
 
-  fs.writeFileSync(this.path, content);
+  if (content !== this.original) {
+    fs.writeFileSync(this.path, content);
+    console.log(chalk.magenta("* updated " + this.name + "."));
+  }
 };
 
 function ScriptUpdater(name) {
   var scriptPath = path.join(name),
       content    = fs.readFileSync(scriptPath, 'utf-8');
 
-  this.path = scriptPath;
-  this.content = content;
+  this.name     = name;
+  this.path     = scriptPath;
+  this.original = content;
+  this.content  = content;
 }
 
-ScriptUpdater.prototype.update = function (re, updated) {
-  this.content = this.content.replace(re, updated);
+ScriptUpdater.prototype.update = function (re, updated, existing) {
+  existing = existing || updated;
+  if (this.content.indexOf(existing) === -1) {
+    this.content = this.content.replace(re, updated);
+  }
 };
 
 ScriptUpdater.prototype.save = function () {
-  fs.writeFileSync(this.path, this.content);
+  if (this.content !== this.original) {
+    fs.writeFileSync(this.path, this.content);
+    console.log(chalk.magenta("* updated " + this.name + "."));
+  }
 };

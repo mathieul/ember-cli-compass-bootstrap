@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/mathieul/ember-cli-compass-bootstrap",
   "dependencies": {
+    "chalk": "^0.5.0",
     "fs-extra": "^0.10.0"
   }
 }
