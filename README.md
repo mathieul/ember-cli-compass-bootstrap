@@ -13,7 +13,7 @@ ultra fast preprocessing. Compass and Bootstrap for Sass are installed using bow
 
 It is a two-steps installation process. You install the npm module, ember-cli will automatically
 pick up the addon. You also need to generate a scss file, which will also update npm and bower
-configuration files with the necessary dependencies.
+configuration files with the necessary packages and install them.
 
 First install the npm package:
 
@@ -27,11 +27,4 @@ any custom content to the new `app.scss`):
 ```
 ember g scss app
 rm app/styles/app.css
-```
-
-Finally install the new npm and bower packages added by the generator by running:
-
-```
-npm install
-bower install
 ```

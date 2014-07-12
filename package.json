@@ -1,6 +1,6 @@
 {
   "name": "ember-cli-compass-bootstrap",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Ember CLI add-on to install sass, compass and bootstrap-sass",
   "main": "index.js",
   "scripts": {
@@ -20,8 +20,12 @@
   },
   "homepage": "https://github.com/mathieul/ember-cli-compass-bootstrap",
   "dependencies": {
+    "bower": "^1.3.8",
+    "bower-config": "^0.5.2",
+    "broccoli-merge-trees": "^0.1.4",
     "chalk": "^0.5.0",
     "fs-extra": "^0.10.0",
-    "broccoli-merge-trees": "^0.1.4"
+    "npm": "^1.4.20",
+    "rsvp": "^3.0.9"
   }
 }

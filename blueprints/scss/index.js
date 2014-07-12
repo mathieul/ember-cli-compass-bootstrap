@@ -1,6 +1,10 @@
-var fs    = require('fs-extra');
-var path  = require('path');
-var chalk = require('chalk');
+var fs          = require('fs-extra');
+var path        = require('path');
+var chalk       = require('chalk');
+var RSVP        = require('rsvp');
+var npm         = require('npm');
+var bower       = require('bower');
+var bowerConfig = require('bower-config');
 
 var _npmPackages = {'broccoli-merge-trees': '^0.1.4',
                     'broccoli-static-compiler': '^0.1.4',
@@ -47,12 +51,7 @@ module.exports = {
     brocfileUpdater.update(/module.exports\s*=\s*app.toTree\(\);/, _brocEnd);
     brocfileUpdater.save();
 
-    console.log(
-      chalk.blue("Please update npm and bower packages: execute ") +
-      chalk.red.bold("npm install") +
-      chalk.blue(" and ") +
-      chalk.red.bold("bower install") + chalk.blue(".")
-    );
+    return RSVP.all([npmInstall(), bowerInstall()]);
   }
 };
 
@@ -107,3 +106,37 @@ ScriptUpdater.prototype.save = function () {
     console.log(chalk.magenta("* updated " + this.name + "."));
   }
 };
+
+function npmInstall() {
+  return new RSVP.Promise(function (resolve, reject) {
+    npm.load({}, function (err) {
+      if (err) {
+        reject(err);
+      } else {
+        npm.commands.install([], function (err, data) {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(data);
+          }
+        });
+      }
+    });
+  }).then(function () {
+    console.log(chalk.magenta("* installed npm packages."));
+  });
+}
+
+function bowerInstall() {
+  var config = bowerConfig.read();
+
+  config.interactive = true;
+
+  return new RSVP.Promise(function (resolve, reject) {
+    bower.commands.install([], { save: true }, config)
+      .on('error', reject)
+      .on('end', resolve);
+  }).then(function () {
+    console.log(chalk.magenta("* installed bower packages."));
+  });
+}
