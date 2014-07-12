@@ -28,3 +28,10 @@ any custom content to the new `app.scss`):
 ember g scss app
 rm app/styles/app.css
 ```
+
+Finally install the new npm and bower packages added by the generator by running:
+
+```
+npm install
+bower install
+```
