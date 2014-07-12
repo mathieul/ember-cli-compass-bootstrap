@@ -1,6 +1,6 @@
 {
   "name": "ember-cli-compass-bootstrap",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Ember CLI add-on to install sass, compass and bootstrap-sass",
   "main": "index.js",
   "scripts": {

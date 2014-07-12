@@ -4,6 +4,12 @@
 // Compass documentation: http://compass-style.org
 @import "compass";
 
-html, body {
-  margin: 20px;
+body {
+  margin-top: 50px;
+}
+
+.navbar-form .form-group {
+  display: inline-block;
+  margin-bottom: 0;
+  vertical-align: middle;
 }

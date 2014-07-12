@@ -28,3 +28,17 @@ any custom content to the new `app.scss`):
 ember g scss app
 rm app/styles/app.css
 ```
+
+## Blueprints
+
+Besides the `scss` blueprint intended to setup an application to use Compass and Bootstrap,
+another blueprint `bootstrap` can be used to generate templates using Bootstrap markup.
+
+```ember g bootstrap application type:navbar-fixed```
+
+Current supported types are:
+
+* `navbar`
+* `navbar-fixed`
+* `sign-in`
+* `started` (default)
