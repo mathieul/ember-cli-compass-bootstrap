@@ -16,7 +16,7 @@ var _bowerPackages = {'bootstrap-sass-official': '3.2.0',
 var _brocInit = "var pickFiles  = require('broccoli-static-compiler');\n"
               + "var mergeTrees = require('broccoli-merge-trees');";
 
-var _brocEnd  = "var bootstrapDir = 'vendor/bootstrap-sass-official/assets';\n\n"
+var _brocEnd  = "var bootstrapDir = 'bower_components/bootstrap-sass-official/assets';\n\n"
               + "// select bootstrap JavaScript components to include\n"
               + "var bootstrapComponents = ['dropdown', 'alert'];\n\n"
               + "for (var index in bootstrapComponents) {\n"

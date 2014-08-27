@@ -6,6 +6,8 @@ This is an addon for [ember-cli](http://iamstef.net/ember-cli/) that adds suppor
   * [Compass](http://compass-style.org) (through bower package [compass-mixins](https://github.com/Igosuki/compass-mixins))
   * [Bootstrap for Sass](http://getbootstrap.com)
 
+It requires ember 0.041+.
+
 The package is using libsass (coming with ember-cli through broccoli-sass and node-sass) to benefit from
 ultra fast preprocessing. Compass and Bootstrap for Sass are installed using bower.
 
