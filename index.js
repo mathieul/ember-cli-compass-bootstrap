@@ -15,8 +15,8 @@ CompassBootstrapAddon.prototype.treeFor = function (type) {
   if (type !== 'styles') { return; }
 
   return mergeTrees([
-    'bower_components/bootstrap-sass-official/assets/stylesheets',
-    'bower_components/compass-mixins/lib'
+    this.project.bowerDirectory + '/bootstrap-sass-official/assets/stylesheets',
+    this.project.bowerDirectory + '/compass-mixins/lib'
   ]);
 };
 
